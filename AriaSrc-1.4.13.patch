@@ -1,0 +1,471 @@
+diff -ur AriaSrc-1.4.13.orig/SConstruct AriaSrc-1.4.13/SConstruct
+--- AriaSrc-1.4.13.orig/SConstruct	2017-01-03 05:42:09
++++ AriaSrc-1.4.13/SConstruct	2026-10-08 21:59:24
+@@ -3,7 +3,7 @@
+ import platform
+ import subprocess
+ 
+-Help("""
++Help(r"""
+       Usage:
+         % scons
+             does a release build, auto-detects your system
+@@ -106,14 +106,14 @@
+         elif os.uname()[0] == 'Darwin':
+             which_os = "macosx"
+         else:
+-            print "!! Unknown operating system '" + os.uname()[0] + "', defaulting to Unix"
++            print("!! Unknown operating system '" + os.uname()[0] + "', defaulting to Unix")
+             which_os = "unix"
+ 
+     if not which_os in ["netbsd", "linux", "macosx", "unix", "windows"]:
+-        print "!! Unknown operating system '" + which_os + "', please specify 'platform=[linux/macosx/unix/windows/netbsd]'"
++        print("!! Unknown operating system '" + which_os + "', please specify 'platform=[linux/macosx/unix/windows/netbsd]'")
+         sys.exit(0) 
+     
+-    print">> Operating system : " + which_os 
++    print(">> Operating system : " + which_os)
+ 
+     # check what to do
+     if 'uninstall' in COMMAND_LINE_TARGETS:
+@@ -121,7 +121,7 @@
+         if which_os in ["linux", "unix", "netbsd"]:
+             uninstall_Aria_unix()
+         else:
+-            print "!! Unknown operation or system (uninstall is not valid on your system)"
++            print("!! Unknown operation or system (uninstall is not valid on your system)")
+             sys.exit(0)
+     elif 'install' in COMMAND_LINE_TARGETS:
+         # install
+@@ -130,7 +130,7 @@
+         elif which_os == "macosx":
+             install_Aria_mac()
+         else:
+-            print "!! Unknown operation or system (install is not valid on your system)"
++            print("!! Unknown operation or system (install is not valid on your system)")
+             sys.exit(0)     
+     else:
+         # compile
+@@ -139,18 +139,18 @@
+ # ---------------------------- Install Mac OS X -----------------------------
+ 
+ def install_Aria_mac():
+-    sys_command("mkdir -p ./Aria\ Maestosa.app/Contents/MacOS")
+-    sys_command("cp ./Aria ./Aria\ Maestosa.app/Contents/MacOS/Aria\ Maestosa")
+-    sys_command("cp ./OSX/release.plist ./Aria\ Maestosa.app/Contents/Info.plist")
+-    sys_command("cp -r ./Resources ./Aria\ Maestosa.app/Contents/")
+-    sys_command("cp -r ./OSX/mac-i18n/. ./Aria\ Maestosa.app/Contents/Resources/.")
+-    sys_command("cp -r ./OSX/*.icns ./Aria\ Maestosa.app/Contents/Resources/.")
+-    sys_command("touch ./Aria\ Maestosa.app")
++    sys_command(r"mkdir -p ./Aria\ Maestosa.app/Contents/MacOS")
++    sys_command(r"cp ./Aria ./Aria\ Maestosa.app/Contents/MacOS/Aria\ Maestosa")
++    sys_command(r"cp ./OSX/release.plist ./Aria\ Maestosa.app/Contents/Info.plist")
++    sys_command(r"cp -r ./Resources ./Aria\ Maestosa.app/Contents/")
++    sys_command(r"cp -r ./OSX/mac-i18n/. ./Aria\ Maestosa.app/Contents/Resources/.")
++    sys_command(r"cp -r ./OSX/*.icns ./Aria\ Maestosa.app/Contents/Resources/.")
++    sys_command(r"touch ./Aria\ Maestosa.app")
+ 
+-    print "*** Cleaning up..."
+-    os.system("cd ./Aria\ Maestosa.app && find . -name \".svn\" -exec rm -rf '{}' \;")
++    print("*** Cleaning up...")
++    os.system(r"cd ./Aria\ Maestosa.app && find . -name \".svn\" -exec rm -rf '{}' \;")
+     
+-    print "*** Done"
++    print("*** Done")
+     sys.exit(0)
+ 
+ # ---------------------------- Uninstall Linux -----------------------------
+@@ -161,10 +161,10 @@
+     prefix = ARGUMENTS.get('prefix', 0)
+     
+     if prefix == 0:
+-        print ">> No prefix specified, defaulting to /usr/local/"
++        print(">> No prefix specified, defaulting to /usr/local/")
+         prefix = '/usr/local/'
+     else:
+-         print ">> Prefix: " + prefix
++         print(">> Prefix: " + prefix)
+     
+     if prefix[-1] != "/":
+         prefix += "/"
+@@ -177,16 +177,16 @@
+     os.system("rm " + app_path)
+     os.system("rm " + locale_path + "*/LC_MESSAGES/aria_maestosa.mo")
+ 
+-    print "\n*** Uninstall done"
++    print("\n*** Uninstall done")
+     sys.exit(0)
+ 
+ # -- small helper func
+ # executes a command on the system shell and prints it to stdout
+ def sys_command(command):
+-    print command
++    print(command)
+     return_status = os.system(command)
+     if return_status != 0:
+-        print "An error occured"
++        print("An error occured")
+         sys.exit(0)
+         
+ # ---------------------------- Compile -----------------------------
+@@ -204,16 +204,16 @@
+     env['ENV']['PATH'] = os.environ.get('PATH')
+     
+     if 'CXX' in os.environ:
+-        print ">> Using compiler " + os.environ['CXX']
++        print(">> Using compiler " + os.environ['CXX'])
+         env.Replace(CXX = os.environ['CXX'])
+ 
+     # check build style
+     build_type = ARGUMENTS.get('config', 'release')
+     if build_type != 'release' and build_type != 'debug':
+-        print "!! Unknown build config " + build_type
++        print("!! Unknown build config " + build_type)
+         sys.exit(0) 
+         
+-    print ">> Build type : " + build_type
++    print(">> Build type : " + build_type)
+     
+     # check renderer
+     if which_os == "macosx":
+@@ -221,10 +221,10 @@
+     else:
+         renderer = ARGUMENTS.get('renderer', 'wxwidgets')
+     if renderer != 'opengl' and renderer != 'wxwidgets':
+-        print "!! Unknown renderer " + renderer
++        print("!! Unknown renderer " + renderer)
+         sys.exit(0)
+ 
+-    print ">> Renderer : " + renderer
++    print(">> Renderer : " + renderer)
+     if renderer == 'opengl':
+         env.Append(CCFLAGS=['-DRENDERER_OPENGL'])
+     elif renderer == 'wxwidgets':
+@@ -233,16 +233,16 @@
+     # Check architecture
+     compiler_arch = ARGUMENTS.get('compiler_arch', platform.architecture(env['CXX']))[0]
+     if compiler_arch != '32bit' and compiler_arch != '64bit':
+-        print 'Invalid architecture : ', compiler_arch, '; assuming 32bit'
++        print('Invalid architecture : ', compiler_arch, '; assuming 32bit')
+         compiler_arch = '32bit'
+         
+-    print ">> Architecture : " + compiler_arch
++    print(">> Architecture : " + compiler_arch)
+     
+     # add wxWidgets flags
+     # check if user defined his own WXCONFIG, else use defaults
+     WXCONFIG = ARGUMENTS.get('WXCONFIG', 'wx-config')
+     if which_os != 'windows':
+-        print ">> wx-config : " + WXCONFIG
++        print(">> wx-config : " + WXCONFIG)
+         
+     if which_os == 'windows':
+     
+@@ -251,10 +251,10 @@
+             sys.stderr.write("Please pass WX_HOME for Windows builds")
+             sys.exit(1)
+            
+-        winCppFlags = ['-mthreads', '-DHAVE_W32API_H', '-D__WXMSW__', '-D_UNICODE', '-I' + wxHomePath + '\lib\gcc_dll\mswu',
+-                       '-I' + wxHomePath + '\include', '-DWXUSINGDLL', '-Wno-ctor-dtor-privacy', '-std=gnu++11'] 
++        winCppFlags = ['-mthreads', '-DHAVE_W32API_H', '-D__WXMSW__', '-D_UNICODE', '-I' + wxHomePath + r'\lib\gcc_dll\mswu',
++                       '-I' + wxHomePath + r'\include', '-DWXUSINGDLL', '-Wno-ctor-dtor-privacy', '-std=gnu++11'] 
+ 
+-        winLdFlags = ['-mthreads', '-L' + wxHomePath + '\lib\gcc_dll', '-lwxbase310u_gcc_custom', '-lwxmsw310u_core_gcc_custom',
++        winLdFlags = ['-mthreads', '-L' + wxHomePath + r'\lib\gcc_dll', '-lwxbase310u_gcc_custom', '-lwxmsw310u_core_gcc_custom',
+                       '-lwxmsw310u_adv_gcc_custom', '-lwxbase310u_net_gcc_custom', '-lwxtiff', '-lwxjpeg', '-lwxpng',
+                       '-lwxzlib', '-lwxregexu', '-lwxexpat', '-lkernel32', '-luser32', '-lgdi32', '-lcomdlg32', '-lwxregexu', '-lwinspool',
+                       '-lwinmm', '-lshell32', '-lcomctl32', '-lole32', '-loleaut32', '-luuid', '-lrpcrt4', '-ladvapi32', '-lwsock32']
+@@ -262,12 +262,12 @@
+         if renderer == "opengl":
+             winLdFlags = winLdFlags + ['-lopengl32','-lwxmsw310u_gl_gcc_custom','-lglu32']
+         
+-        print "Build flags :", winCppFlags
+-        print "Link flags :", winLdFlags
++        print("Build flags :", winCppFlags)
++        print("Link flags :", winLdFlags)
+         
+         try:
+-            command = ["windres", "--include-dir="+wxHomePath+"\include", "--input", "win32\Aria.rc", "--output", "msvcr.o"]
+-            print command
++            command = ["windres", "--include-dir="+wxHomePath+r"\include", "--input", r"win32\Aria.rc", "--output", "msvcr.o"]
++            print(command)
+             out = subprocess.Popen(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
+         except:
+             sys.stderr.write("could not execute 'windres', is mingw installed?\n")
+@@ -278,8 +278,9 @@
+         # Ugly hack : wx flags need to appear at the end of the command, but scons doesn't support that, so I need to hack their link command
+         env['LINKCOM']     = '$LINK -o $TARGET $LINKFLAGS $SOURCES $_LIBDIRFLAGS $_LIBFLAGS ' + (' -mwindows ' if build_type == 'release' else '') + ' '.join(winLdFlags)
+     else:
+-        wxversion = subprocess.check_output([WXCONFIG,"--version"]).strip()
+-        print ">> wxWidgets version : " + wxversion
++        wxversion_bytes = subprocess.check_output([WXCONFIG,"--version"]).strip()
++        wxversion = wxversion_bytes.decode("utf-8")
++        print(">> wxWidgets version : " + wxversion)
+         is_wx_3 = (wxversion[0] == '3' or (wxversion[0] == '2' and wxversion[2] == '9'))
+         if is_wx_3:
+             if renderer == "opengl":
+@@ -304,16 +305,16 @@
+             env.Append(CCFLAGS=['-O2','-DNDEBUG=1'])
+     
+     else:
+-        print 'Unknown build type, cannot continue'
++        print('Unknown build type, cannot continue')
+         sys.exit(0)
+         
+     # init common header search paths
+     env.Append(CPPPATH = ['./Src','.','./libjdkmidi/include','./rtmidi'])
+ 
+-    print " "
++    print(" ")
+ 
+     # add common sources
+-    print "*** Adding source files"
++    print("*** Adding source files")
+     
+     sources = []
+     for file in RecursiveGlob(".", "*.cpp"):
+@@ -337,12 +338,12 @@
+     # OS X (QTKit, CoreAudio, audiotoolbox)
+     if which_os == "macosx":
+ 
+-        print "*** Adding mac source files and libraries"
++        print("*** Adding mac source files and libraries")
+         env.Append(CCFLAGS=['-D_MAC_QUICKTIME_COREAUDIO'])
+         sources = sources + ['Src/Midi/Players/Mac/QuickTimeExport.mm','Src/GUI/Machelper.mm']
+         env.Append(CPPPATH=['Src/Midi/Players/Mac'])
+     
+-        env.Append(LINKFLAGS = ['-framework','QTKit','-framework', 'Quicktime','-framework','CoreAudio',
++        env.Append(LINKFLAGS = ['-framework','QTKit','-framework','CoreAudio',
+         '-framework','AudioToolbox','-framework','AudioUnit','-framework','AppKit',
+         '-framework','Carbon','-framework','Cocoa','-framework','IOKit','-framework','System',
+         '-framework','CoreMIDI'])
+@@ -351,17 +352,17 @@
+             env.Append(CCFLAGS=['-arch','i386'])
+             env.Append(LINKFLAGS = ['-arch','i386'])
+         elif compiler_arch == '64bit':
+-            env.Append(CCFLAGS=['-arch','x86_64'])
+-            env.Append(LINKFLAGS = ['-arch','x86_64'])
++            env.Append(CCFLAGS=['-arch','arm64'])
++            env.Append(LINKFLAGS = ['-arch','arm64'])
+             
+             
+         if renderer == 'opengl':
+-            env.Append(LINKFLAGS = ['-framework','OpenGL','-framework','AGL'])
++            env.Append(LINKFLAGS = ['-framework','OpenGL'])
+         
+     # NetBSD, FreeBSD (Alsa/tiMidity)
+     elif which_os == "netbsd":
+     
+-        print "*** Adding Alsa libraries and defines"
++        print("*** Adding Alsa libraries and defines")
+         
+         if renderer == 'opengl':
+             env.Append(CCFLAGS=['-DwxUSE_GLCANVAS=1'])
+@@ -385,7 +386,7 @@
+     # linux (Alsa/tiMidity)
+     elif which_os == "linux":
+     
+-        print "*** Adding Alsa libraries and defines"
++        print("*** Adding Alsa libraries and defines")
+         
+         if renderer == 'opengl':
+             env.Append(CCFLAGS=['-DwxUSE_GLCANVAS=1'])
+@@ -411,7 +412,7 @@
+         env.ParseConfig( 'pkg-config --libs glib-2.0' )
+         
+     elif which_os == "unix":
+-        print "*** Adding libraries and defines for Unix"
++        print("*** Adding libraries and defines for Unix")
+         
+         if renderer == 'opengl':
+             env.Append(CCFLAGS=['-DwxUSE_GLCANVAS=1'])
+@@ -432,7 +433,7 @@
+ 
+     else:
+     
+-        print "\n\n/!\\ Platform ", which_os, " is unknown"
++        print("\n\n/!\\ Platform ", which_os, " is unknown")
+         sys.exit(0)
+ 
+ 
+@@ -445,11 +446,11 @@
+     # **************************************** COMPILE ********************************************
+     # *********************************************************************************************
+     
+-    print " "
+-    print "====================="
+-    print "     Setup done "
+-    print "====================="
+-    print " "
++    print(" ")
++    print("=====================")
++    print("     Setup done ")
++    print("=====================")
++    print(" ")
+ 
+     # compile to .o
+     object_list = env.Object(source = sources)
+@@ -467,14 +468,14 @@
+         prefix = ARGUMENTS.get('prefix', 0)
+     
+         if prefix == 0:
+-            print ">> No prefix specified, defaulting to /usr/local/"
++            print(">> No prefix specified, defaulting to /usr/local/")
+             prefix = '/usr/local/'
+         else:
+-            print ">> Prefix : " + prefix
++            print(">> Prefix : " + prefix)
+ 
+         # set umask so created directories have the correct permissions
+         try:
+-            umask = os.umask(022)
++            umask = os.umask(0o022)
+         except OSError:     # ignore on systems that don't support umask
+             pass
+     
+@@ -491,7 +492,7 @@
+         env.Command( executable_target, executable,
+         [
+         Copy("$TARGET","$SOURCE"),
+-        Chmod("$TARGET", 0775),
++        Chmod("$TARGET", 0o0775),
+         ])        
+ 
+ 
+@@ -509,7 +510,7 @@
+             env.Command( target, source,
+             [
+             Copy("$TARGET","$SOURCE"),
+-            Chmod("$TARGET", 0664),
++            Chmod("$TARGET", 0x0664),
+             ])
+ 
+         # install .mo files
+diff -ur AriaSrc-1.4.13.orig/Src/Midi/Players/Mac/AudioUnitOutput.cpp AriaSrc-1.4.13/Src/Midi/Players/Mac/AudioUnitOutput.cpp
+--- AriaSrc-1.4.13.orig/Src/Midi/Players/Mac/AudioUnitOutput.cpp	2017-01-03 05:42:09
++++ AriaSrc-1.4.13/Src/Midi/Players/Mac/AudioUnitOutput.cpp	2026-10-07 20:59:05
+@@ -40,6 +40,15 @@
+ 
+ using namespace AriaMaestosa;
+ 
++#ifndef require_noerr
++#define require_noerr(errorCode, label) \
++    do { \
++        if (noErr != (errorCode)) { \
++            goto label; \
++        } \
++    } while (0)
++#endif
++
+ #if 0
+ #pragma mark -
+ #pragma mark Render to file
+@@ -387,7 +396,7 @@
+     }
+     	
+     CFDataRef cfdata = CFDataCreate(kCFAllocatorDefault, (const UInt8*)data, dataSize);
+-	result = MusicSequenceFileLoadData (sequence, cfdata, 0, loadFlags);
++    result = MusicSequenceFileLoadData (sequence, cfdata, static_cast<MusicSequenceFileTypeID>(0), loadFlags);
+     if (result != 0)
+     {
+         fprintf(stderr, "Error %i at MusicSequenceFileLoad\n", (int)result);
+diff -ur AriaSrc-1.4.13.orig/Src/Midi/Players/Mac/CoreMIDIOutput.cpp AriaSrc-1.4.13/Src/Midi/Players/Mac/CoreMIDIOutput.cpp
+--- AriaSrc-1.4.13.orig/Src/Midi/Players/Mac/CoreMIDIOutput.cpp	2017-01-03 05:42:09
++++ AriaSrc-1.4.13/Src/Midi/Players/Mac/CoreMIDIOutput.cpp	2026-10-07 20:56:20
+@@ -110,7 +110,7 @@
+                     if (connObjectType == kMIDIObjectType_ExternalSource  ||
+                         connObjectType == kMIDIObjectType_ExternalDestination) {
+                         // Connected to an external device's endpoint (10.3 and later).
+-                        str = EndpointName((OpaqueMIDIEndpoint*)(connObject), true);
++                        str = EndpointName(static_cast<MIDIEndpointRef>(connObject), true);
+                         //str = EndpointName(connObject, true);
+                     } else {
+                         // Connected to an external device (10.2) (or something else, catch-all)
+@@ -210,7 +210,7 @@
+     
+     const int MESSAGESIZE = 3;
+ 
+-    Byte noteon[MESSAGESIZE] = {0x90 | channel, note, volume};
++    Byte noteon[MESSAGESIZE] = {static_cast<Byte>(0x90 | channel), static_cast<Byte>(note), static_cast<Byte>(volume)};
+     currentpacket = MIDIPacketListAdd(packetlist, sizeof(buffer), 
+                                       currentpacket, timestamp, MESSAGESIZE, noteon);
+     
+@@ -232,7 +232,7 @@
+     const int MESSAGESIZE = 3;
+ 
+     currentpacket = MIDIPacketListInit(packetlist);
+-    Byte noteoff[MESSAGESIZE] = {0x90 | channel, note, 0};
++    Byte noteoff[MESSAGESIZE] = {static_cast<Byte>(0x90 | channel), static_cast<Byte>(note), 0};
+     currentpacket = MIDIPacketListAdd(packetlist, sizeof(buffer), 
+                                       currentpacket, timestamp, MESSAGESIZE, noteoff);
+     
+@@ -254,7 +254,7 @@
+     const int MESSAGESIZE = 2;
+     
+     currentpacket = MIDIPacketListInit(packetlist);
+-    Byte noteoff[MESSAGESIZE] = {0xC0 | channel, instrument};
++    Byte noteoff[MESSAGESIZE] = {static_cast<Byte>(0xC0 | channel), static_cast<Byte>(instrument)};
+     currentpacket = MIDIPacketListAdd(packetlist, sizeof(buffer), 
+                                       currentpacket, timestamp, MESSAGESIZE, noteoff);
+     
+@@ -275,7 +275,7 @@
+     const int MESSAGESIZE = 3;
+     
+     currentpacket = MIDIPacketListInit(packetlist);
+-    Byte noteoff[MESSAGESIZE] = {0xB0 | channel, controller, value};
++    Byte noteoff[MESSAGESIZE] = {static_cast<Byte>(0xB0 | channel), static_cast<Byte>(controller), static_cast<Byte>(value)};
+     currentpacket = MIDIPacketListAdd(packetlist, sizeof(buffer), 
+                                       currentpacket, timestamp, MESSAGESIZE, noteoff);
+     
+@@ -299,7 +299,7 @@
+     int c2 = ((value >> 7) & 0x7F);
+     
+     currentpacket = MIDIPacketListInit(packetlist);
+-    Byte noteoff[MESSAGESIZE] = {0xE0 | channel, c1, c2};
++    Byte noteoff[MESSAGESIZE] = {static_cast<Byte>(0xE0 | channel), static_cast<Byte>(c1), static_cast<Byte>(c2)};
+     currentpacket = MIDIPacketListAdd(packetlist, sizeof(buffer), 
+                                       currentpacket, timestamp, MESSAGESIZE, noteoff);
+     
+diff -ur AriaSrc-1.4.13.orig/Src/Midi/Players/Mac/QuickTimeExport.mm AriaSrc-1.4.13/Src/Midi/Players/Mac/QuickTimeExport.mm
+--- AriaSrc-1.4.13.orig/Src/Midi/Players/Mac/QuickTimeExport.mm	2017-01-03 05:42:09
++++ AriaSrc-1.4.13/Src/Midi/Players/Mac/QuickTimeExport.mm	2026-10-07 21:17:27
+@@ -13,19 +13,30 @@
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+-
+ #ifdef _MAC_QUICKTIME_COREAUDIO
+ 
++#if 0
+ #include <iostream>
+ 
+ #import <Foundation/Foundation.h>
+ #import <Foundation/NSError.h>
+ #import <QTKit/QTMovie.h>
+ #import <QTKit/QTDataReference.h>
++#endif
+ 
+ #import "QuickTimeExport.h"
+ 
++#if 1
++bool QuickTimeExport::qtkit_setData(char* data_bytes, int bytes_length)
++{
++    return true;
++}
+ 
++bool QuickTimeExport::qtkit_exportToAiff(const char* filename)
++{
++    return true;
++}
++#else
+ QTMovie* movie = nil;
+ 
+ 
+@@ -88,4 +99,5 @@
+ 	return success;
+ }
+ 
+-#endif
+\ No newline at end of file
++#endif
++#endif
