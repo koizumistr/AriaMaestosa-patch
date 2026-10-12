@@ -1,4 +1,4 @@
-# Aria Maestosa patchs for modern MacOS
+# Aria Maestosa patches for modern MacOS
 
 A set of patches and build fixes to compile and run **[Aria Maestosa](http://ariamaestosa.sourceforge.net/)** (an open-source MIDI tracker/sequencer) on modern Mac.
 
@@ -6,6 +6,14 @@ A set of patches and build fixes to compile and run **[Aria Maestosa](http://ari
 
 - Fixed compilation errors on modern macOS environments.
 - Updated build scripts for modern environments.
+
+## Prerequisites
+
+Make sure you have development tools (Xcode Command Line Tools) and Homebrew installed. Python, SCons, and wxWidgets can be easily installed via Homebrew:
+Tested with
+- Python 3.14+
+- SCons 4.x
+- and wxWidgets 3.3+
 
 ## Usage & Build Instructions
 
@@ -16,7 +24,14 @@ A set of patches and build fixes to compile and run **[Aria Maestosa](http://ari
 tar jxvf AriaSrc-1.4.13.tar.bz2
 cd AriaSrc-1.4.13
 patch -p1 < /path/to/AriaSrc-1.4.13.patch
+scons -j8
+scons install
 ```
+
+## Known Limitations
+
+- "Export to Audio" does not work: The underlying QuickTime export function is currently stubbed out (empty implementation).
+- UI scaling on 4K displays: May look broken or misaligned on high-resolution 4K monitors due to legacy UI framework limitations.
 
 ## Credits
 
@@ -24,6 +39,8 @@ patch -p1 < /path/to/AriaSrc-1.4.13.patch
 
 
 # 最近のMacで Aria Maestosa を動作させるためのパッチ
+
+日本語だけですが[詳細な説明](details.md)を用意しています。
 
 ## 変更点
 
