@@ -7,13 +7,10 @@ A set of patches and build fixes to compile and run **[Aria Maestosa](http://ari
 - Fixed compilation errors on modern macOS environments.
 - Updated build scripts for modern environments.
 
-## Prerequisites
+## Tested Environment & Prerequisites
 
-Make sure you have development tools (Xcode Command Line Tools) and Homebrew installed. Python, SCons, and wxWidgets can be easily installed via Homebrew:
-Tested with
-- Python 3.14+
-- SCons 4.x
-- and wxWidgets 3.3+
+- macOS 27 (Golden Gate), M2 Max
+- **Prerequisites:** Xcode Command Line Tools and Homebrew (used for managing Python, SCons, and wxWidgets).
 
 ## Usage & Build Instructions
 
